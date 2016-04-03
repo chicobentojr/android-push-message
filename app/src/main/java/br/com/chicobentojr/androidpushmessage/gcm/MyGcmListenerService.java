@@ -3,8 +3,9 @@ package br.com.chicobentojr.androidpushmessage.gcm;
 import android.os.Bundle;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.gson.Gson;
 
-import br.com.chicobentojr.androidpushmessage.models.PushMessage;
+import br.com.chicobentojr.androidpushmessage.models.Message;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -17,9 +18,8 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
         //super.onMessageReceived(from, data);
 
-        String title = data.getString("Title");
-        String message = data.getString("Content");
+        Message message = new Gson().fromJson(data.getString("message"), Message.class);
 
-        EventBus.getDefault().post(new PushMessage(title, message));
+        EventBus.getDefault().post(new Message(message.Title,message.Content));
     }
 }

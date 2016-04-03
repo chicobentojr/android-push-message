@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import br.com.chicobentojr.androidpushmessage.models.User;
 import br.com.chicobentojr.androidpushmessage.utils.P;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by Francisco on 01/04/2016.
@@ -30,7 +31,7 @@ public class RegistrationIntentService extends IntentService {
         synchronized (LOG) {
             InstanceID instanceID = InstanceID.getInstance(this);
             try {
-                if (user.RegistrationId.equals("")) {
+                if (user.RegistrationId.isEmpty()) {
 
                     String token = instanceID.getToken(P.SENDER_ID, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
@@ -58,6 +59,7 @@ public class RegistrationIntentService extends IntentService {
                 P.setUser(user);
                 Log.i(LOG, "USER: " + user.Name);
                 Log.i(LOG, "TOKEN: " + user.RegistrationId);
+                EventBus.getDefault().post(user);
             }
 
             @Override

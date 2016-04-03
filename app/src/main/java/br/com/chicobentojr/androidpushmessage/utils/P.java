@@ -40,4 +40,9 @@ public class P {
                 .putString(USER_REGISTRATION_ID, user.RegistrationId)
                 .apply();
     }
+
+    public static void clear() {
+        user = null;
+        prefs.edit().clear().apply();
+    }
 }
