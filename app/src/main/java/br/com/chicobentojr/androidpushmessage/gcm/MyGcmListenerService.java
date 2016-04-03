@@ -20,6 +20,6 @@ public class MyGcmListenerService extends GcmListenerService {
 
         Message message = new Gson().fromJson(data.getString("message"), Message.class);
 
-        EventBus.getDefault().post(new Message(message.Title,message.Content));
+        EventBus.getDefault().post(message);
     }
 }
