@@ -4,7 +4,9 @@
     <string name="txtNameHint">Name</string>
     <string name="txtLoginHint">Login</string>
     <string name="fontLight">sans-serif-light</string>
+    <string name="fontThin">sans-serif-thin</string>
     <string name="login_activity_name">Login</string>
+    <string name="main_activity_name">Chat</string>
     <string name="name_empty_error">Name is a required field</string>
     <string name="login_empty_error">Login is a required field</string>
 

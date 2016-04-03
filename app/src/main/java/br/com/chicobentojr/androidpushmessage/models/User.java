@@ -6,12 +6,15 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import br.com.chicobentojr.androidpushmessage.utils.ApiRoutes;
 import br.com.chicobentojr.androidpushmessage.utils.AppController;
@@ -26,8 +29,19 @@ public class User implements Serializable {
     public String Login;
     public String RegistrationId;
 
+    @Override
+    public String toString() {
+        return this.Name + " (@" + this.Login + ")";
+    }
+
     public interface ApiListener {
         void OnSuccess(User user);
+
+        void OnError(VolleyError error);
+    }
+
+    public interface ApiListListener {
+        void OnSuccess(ArrayList<User> users);
 
         void OnError(VolleyError error);
     }
@@ -62,5 +76,27 @@ public class User implements Serializable {
             e.printStackTrace();
             Log.i("LOG", "The User parse to JSONObject throws an error");
         }
+    }
+
+    public static void listAll(final ApiListListener listener) {
+
+        StringRequest request = new StringRequest(
+                ApiRoutes.USER.LIST_ALL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        ArrayList<User> users = new ArrayList<>(Arrays.asList(new Gson().fromJson(response, User[].class)));
+                        listener.OnSuccess(users);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.OnError(error);
+                    }
+                }
+        );
+
+        AppController.getInstance().addToRequestQueue(request);
     }
 }

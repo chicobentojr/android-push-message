@@ -39,8 +39,6 @@ public class RegistrationIntentService extends IntentService {
 
                     user.RegistrationId = token;
 
-                    //preferences.edit().putBoolean("status", token != null && token.trim().length() > 0).apply();
-
                     registerUser(user);
                 }
             } catch (IOException e) {
@@ -50,9 +48,6 @@ public class RegistrationIntentService extends IntentService {
     }
 
     private void registerUser(User user) {
-
-        // TODO: Send the token to the webservice for save in a user from database
-
         User.register(user, new User.ApiListener() {
             @Override
             public void OnSuccess(User user) {
@@ -65,6 +60,7 @@ public class RegistrationIntentService extends IntentService {
             @Override
             public void OnError(VolleyError error) {
                 Log.i(LOG, "Happened an error with the registerUser method");
+                EventBus.getDefault().post(error);
             }
         });
     }
