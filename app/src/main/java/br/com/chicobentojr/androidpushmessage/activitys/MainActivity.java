@@ -16,6 +16,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import br.com.chicobentojr.androidpushmessage.R;
 import br.com.chicobentojr.androidpushmessage.gcm.RegistrationIntentService;
 import br.com.chicobentojr.androidpushmessage.models.PushMessage;
+import br.com.chicobentojr.androidpushmessage.models.User;
+import br.com.chicobentojr.androidpushmessage.utils.P;
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,16 +43,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         if (checkPlayServices()) {
+            User user = P.getUser();
+            user.Id = 1;
+            user.Name = "Gilberto Gil";
+            user.Login = "gilberto";
+            //user.RegistrationId = "eooQaEB-nSs:APA91bFiUk_dxCwU9HJwhds_4PjuRuhgiEk-cVkkry9OLwsdb999ArkO0h7v6pL19nRRwA80NEgug83M9xb-GIMD6uK4naA2lXt19DLTcmV225ERBNFyz1fpHsqhC5MIaMJIzrVSX6b9";
+
+            P.setUser(user);
+
+
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
         }

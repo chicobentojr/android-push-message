@@ -1,10 +1,11 @@
 package br.com.chicobentojr.androidpushmessage.gcm;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
+
+import br.com.chicobentojr.androidpushmessage.models.User;
+import br.com.chicobentojr.androidpushmessage.utils.P;
 
 /**
  * Created by Francisco on 01/04/2016.
@@ -20,8 +21,9 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
          * so, you don't know when this was executed
          */
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        preferences.edit().putBoolean("status", false).apply();
+        User user = P.getUser();
+        user.RegistrationId = "";
+        P.setUser(user);
 
         Intent intent = new Intent(this, RegistrationIntentService.class);
         startService(intent);
