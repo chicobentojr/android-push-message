@@ -13,6 +13,8 @@ public class ApiRoutes {
     }
 
     public static class MESSAGE {
+        public static final String SEND_ALL = BASE_URL + "api/message/sendall";
+
         public static final String Send(String login){
             return  BASE_URL + "api/message/send/" +login;
         }

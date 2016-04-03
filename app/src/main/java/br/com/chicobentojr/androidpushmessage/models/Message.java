@@ -67,7 +67,42 @@ public class Message {
 
         } catch (JSONException e) {
             e.printStackTrace();
-            Log.i("LOG", "The User parse to JSONObject throws an error");
+            Log.i("LOG", "The Message parse to JSONObject throws an error");
+        }
+    }
+
+    public static void sendAll(final Message message, final ApiListener listener) {
+        final Gson gson = new Gson();
+
+        try {
+            JsonObjectRequest request = new JsonObjectRequest(
+                    Request.Method.POST,
+                    ApiRoutes.MESSAGE.SEND_ALL,
+                    new JSONObject(gson.toJson(message)),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            listener.onSuccess(message);
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (error instanceof ParseError) {
+                                listener.onSuccess(message);
+                            } else {
+                                listener.onError(error);
+                            }
+                        }
+                    }
+            );
+
+            AppController.getInstance().addToRequestQueue(request);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.i("LOG", "The Message parse to JSONObject throws an error");
         }
     }
 }

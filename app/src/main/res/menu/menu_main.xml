@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activitys.MainActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="Settings"
-        app:showAsAction="never" />
+        android:id="@+id/act_all_users"
+        android:icon="@drawable/ic_all_users"
+        android:title="@string/act_all_users"
+        app:showAsAction="ifRoom" />
 </menu>

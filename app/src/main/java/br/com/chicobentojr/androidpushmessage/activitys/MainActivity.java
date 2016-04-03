@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
     private ArrayList<User> usersList;
+
+    private boolean sendToAllUsers = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.setMessage(getString(R.string.send_message_progress_message));
             progressDialog.show();
 
-            Message.send(message, new Message.ApiListener() {
+            Message.ApiListener listener = new Message.ApiListener() {
                 @Override
                 public void onSuccess(Message message) {
                     progressDialog.dismiss();
@@ -170,7 +173,15 @@ public class MainActivity extends AppCompatActivity {
                             .setPositiveButton("Ok", null)
                             .create().show();
                 }
-            });
+            };
+
+            if (sendToAllUsers) {
+                Message.sendAll(message, listener);
+                sendToAllUsers = false;
+
+            } else {
+                Message.send(message, listener);
+            }
         }
     }
 
@@ -184,10 +195,16 @@ public class MainActivity extends AppCompatActivity {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle(title)
                         .setMessage(message.Content)
-                        .setNeutralButton("Ok", null)
+                        .setPositiveButton("Ok", null)
                         .create().show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override
@@ -196,6 +213,10 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 logout();
+                return true;
+            case R.id.act_all_users:
+                sendToAllUsers = true;
+                openSendDialog(null);
                 return true;
         }
         return false;
