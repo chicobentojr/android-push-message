@@ -1,16 +1,25 @@
 <resources>
     <string name="app_name">Android Push Message</string>
-    <string name="action_settings">Settings</string>
+
     <string name="txtNameHint">Name</string>
     <string name="txtLoginHint">Login</string>
+    <string name="txtTitleHint">Title</string>
+    <string name="txtContentHint">Content</string>
+
     <string name="fontLight">sans-serif-light</string>
     <string name="fontThin">sans-serif-thin</string>
     <string name="login_activity_name">Login</string>
     <string name="main_activity_name">Chat</string>
     <string name="name_empty_error">Name is a required field</string>
     <string name="login_empty_error">Login is a required field</string>
+    <string name="title_empty_error">Title is a required field</string>
+    <string name="content_empty_error">Content is a required field</string>
 
     <string name="login_progress_message">Attempting login...</string>
     <string name="load_users_progress_message">Loading Users...</string>
+    <string name="send_message_progress_message">Sending message...</string>
+    
+    <string name="message_sent_dialog_title">The message was sent</string>
+    <string name="error_dialog_title">Error</string>
 
 </resources>

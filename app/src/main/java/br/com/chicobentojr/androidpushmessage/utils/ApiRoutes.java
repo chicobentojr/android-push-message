@@ -11,4 +11,11 @@ public class ApiRoutes {
         public static final String LIST_ALL = BASE_URL + "api/users";
         public static final String REGISTER = BASE_URL + "api/user/register";
     }
+
+    public static class MESSAGE {
+        public static final String Send(String login){
+            return  BASE_URL + "api/message/send/" +login;
+        }
+
+    }
 }

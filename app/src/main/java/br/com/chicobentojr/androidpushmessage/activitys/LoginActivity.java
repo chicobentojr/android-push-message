@@ -98,9 +98,9 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.dismiss();
 
         new AlertDialog.Builder(this)
-                .setTitle("Error")
+                .setTitle(R.string.error_dialog_title)
                 .setMessage(message)
-                .setNeutralButton("Ok", null)
+                .setPositiveButton("Ok", null)
                 .create().show();
     }
 }

@@ -35,15 +35,15 @@ public class User implements Serializable {
     }
 
     public interface ApiListener {
-        void OnSuccess(User user);
+        void onSuccess(User user);
 
-        void OnError(VolleyError error);
+        void onError(VolleyError error);
     }
 
     public interface ApiListListener {
-        void OnSuccess(ArrayList<User> users);
+        void onSuccess(ArrayList<User> users);
 
-        void OnError(VolleyError error);
+        void onError(VolleyError error);
     }
 
     public static void register(User user, final ApiListener listener) {
@@ -59,13 +59,13 @@ public class User implements Serializable {
                         @Override
                         public void onResponse(JSONObject response) {
                             User user = gson.fromJson(response.toString(), User.class);
-                            listener.OnSuccess(user);
+                            listener.onSuccess(user);
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            listener.OnError(error);
+                            listener.onError(error);
                         }
                     }
             );
@@ -86,13 +86,13 @@ public class User implements Serializable {
                     @Override
                     public void onResponse(String response) {
                         ArrayList<User> users = new ArrayList<>(Arrays.asList(new Gson().fromJson(response, User[].class)));
-                        listener.OnSuccess(users);
+                        listener.onSuccess(users);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.OnError(error);
+                        listener.onError(error);
                     }
                 }
         );

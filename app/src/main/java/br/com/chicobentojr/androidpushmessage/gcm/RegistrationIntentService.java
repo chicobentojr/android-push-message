@@ -50,7 +50,7 @@ public class RegistrationIntentService extends IntentService {
     private void registerUser(User user) {
         User.register(user, new User.ApiListener() {
             @Override
-            public void OnSuccess(User user) {
+            public void onSuccess(User user) {
                 P.setUser(user);
                 Log.i(LOG, "USER: " + user.Name);
                 Log.i(LOG, "TOKEN: " + user.RegistrationId);
@@ -58,7 +58,7 @@ public class RegistrationIntentService extends IntentService {
             }
 
             @Override
-            public void OnError(VolleyError error) {
+            public void onError(VolleyError error) {
                 Log.i(LOG, "Happened an error with the registerUser method");
                 EventBus.getDefault().post(error);
             }

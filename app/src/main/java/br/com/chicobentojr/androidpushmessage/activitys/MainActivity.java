@@ -2,6 +2,7 @@ package br.com.chicobentojr.androidpushmessage.activitys;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import com.android.volley.VolleyError;
 
@@ -18,6 +21,7 @@ import br.com.chicobentojr.androidpushmessage.R;
 import br.com.chicobentojr.androidpushmessage.adapters.UserAdapter;
 import br.com.chicobentojr.androidpushmessage.models.Message;
 import br.com.chicobentojr.androidpushmessage.models.User;
+import br.com.chicobentojr.androidpushmessage.utils.ItemClickSupport;
 import br.com.chicobentojr.androidpushmessage.utils.P;
 import de.greenrobot.event.EventBus;
 
@@ -52,9 +56,15 @@ public class MainActivity extends AppCompatActivity {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCanceledOnTouchOutside(false);
 
-
             this.loadUsers();
+            this.onUserClick();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     public void loadUsers() {
@@ -62,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.show();
         User.listAll(new User.ApiListListener() {
             @Override
-            public void OnSuccess(ArrayList<User> users) {
+            public void onSuccess(ArrayList<User> users) {
                 usersList = users;
                 adapter = new UserAdapter(usersList);
                 recyclerView.setAdapter(adapter);
@@ -70,11 +80,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void OnError(VolleyError error) {
+            public void onError(VolleyError error) {
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle("Error")
                         .setMessage(error.getMessage())
-                        .setNeutralButton("Ok", null)
+                        .setPositiveButton("Ok", null)
                         .create().show();
                 progressDialog.dismiss();
             }
@@ -82,11 +92,94 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void onUserClick() {
+        ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                User to = usersList.get(position);
+                openSendDialog(to);
+            }
+        });
+    }
+
+    public void openSendDialog(final User to) {
+        View v = getLayoutInflater().inflate(R.layout.dialog_send_message, null);
+
+        final AlertDialog sendDialog = new AlertDialog.Builder(this)
+                .setTitle("Send Message")
+                .setView(v)
+                .setPositiveButton("Send", null)
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        sendDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(final DialogInterface dialog) {
+                sendDialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onSendClickDialog(sendDialog, to);
+                    }
+                });
+            }
+        });
+
+        sendDialog.show();
+    }
+
+    public void onSendClickDialog(final AlertDialog dialog, User to) {
+        EditText txtTitle = (EditText) dialog.findViewById(R.id.txtTitle);
+        EditText txtContent = (EditText) dialog.findViewById(R.id.txtContent);
+
+        String title = txtTitle.getText().toString();
+        String content = txtContent.getText().toString();
+
+        Message message = new Message(title, content, to);
+
+        if (message.Title.isEmpty()) {
+            txtTitle.setError(getString(R.string.title_empty_error));
+            txtTitle.requestFocus();
+        } else if (message.Content.isEmpty()) {
+            txtContent.setError(getString(R.string.content_empty_error));
+            txtContent.requestFocus();
+        } else {
+            progressDialog.setMessage(getString(R.string.send_message_progress_message));
+            progressDialog.show();
+
+            Message.send(message, new Message.ApiListener() {
+                @Override
+                public void onSuccess(Message message) {
+                    progressDialog.dismiss();
+                    dialog.dismiss();
+
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage(R.string.message_sent_dialog_title)
+                            .setPositiveButton("Ok", null)
+                            .create().show();
+
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    progressDialog.dismiss();
+                    dialog.dismiss();
+
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle(R.string.error_dialog_title)
+                            .setMessage(error.getMessage())
+                            .setPositiveButton("Ok", null)
+                            .create().show();
+                }
+            });
+        }
+    }
+
     public void onEvent(final Message message) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String title = message.User.Name + ": " + message.Title;
+
+                String title = message.User.Name + " says:\n" + message.Title;
 
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle(title)
