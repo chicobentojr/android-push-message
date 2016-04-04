@@ -62,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
             this.loadUsers();
             this.onUserClick();
         }
+
+        Message message = (Message) getIntent().getSerializableExtra("message");
+
+        if (message != null) {
+            this.onEvent(message);
+        }
     }
 
     @Override

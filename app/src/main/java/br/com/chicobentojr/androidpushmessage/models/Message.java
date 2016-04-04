@@ -12,13 +12,15 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 import br.com.chicobentojr.androidpushmessage.utils.ApiRoutes;
 import br.com.chicobentojr.androidpushmessage.utils.AppController;
 
 /**
  * Created by Francisco on 01/04/2016.
  */
-public class Message {
+public class Message implements Serializable {
 
     public String Title;
     public String Content;

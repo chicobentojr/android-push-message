@@ -1,5 +1,6 @@
 package br.com.chicobentojr.androidpushmessage.utils;
 
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
@@ -8,6 +9,8 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+
+import java.util.List;
 
 /**
  * Created by Francisco on 02/04/2016.
@@ -57,4 +60,19 @@ public class AppController extends Application {
     public static Context getContext() {
         return AppController.getInstance().getApplicationContext();
     }
+
+    public static boolean isMyApplicationTaskOnTop(Context context){
+        String packageName = context.getPackageName();
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> recentTasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+        if(recentTasks != null && recentTasks.size()> 0){
+            ActivityManager.RunningTaskInfo t = recentTasks.get(0);
+            String pack = t.baseActivity.getPackageName();
+            if(pack.equals(packageName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
